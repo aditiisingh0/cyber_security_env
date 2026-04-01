@@ -1,0 +1,20 @@
+name: cyber-security-env
+version: 1.0
+
+environment:
+  module: env
+  class: CyberSecurityEnv
+
+observation_model: models.Observation
+action_model: models.Action
+reward_model: models.Reward
+
+tasks:
+  - name: easy
+    grader: grader.easy_grader
+
+  - name: medium
+    grader: grader.medium_grader
+
+  - name: hard
+    grader: grader.hard_grader
