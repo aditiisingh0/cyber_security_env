@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from env import CyberSecurityEnv
+from models import Action
 import uvicorn
 
 app = FastAPI()
@@ -14,8 +15,8 @@ def reset():
     return env.reset().dict()
 
 @app.post("/step")
-def step(action: str):
-    state, reward, done, _ = env.step(action)
+def step(action: Action):
+    state, reward, done, _ = env.step(action.action)
     return {
         "state": state.dict(),
         "reward": reward.reward,
