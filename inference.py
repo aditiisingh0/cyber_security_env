@@ -2,24 +2,29 @@ import os
 from openai import OpenAI
 from env import CyberSecurityEnv
 
+API_BASE_URL = os.getenv("API_BASE_URL", "<your-api-base-url>")
+MODEL_NAME = os.getenv("MODEL_NAME", "<your-active-model>")
+HF_TOKEN = os.getenv("HF_TOKEN")
+
 client = OpenAI(
-    base_url=os.environ.get("API_BASE_URL"),
-    api_key=os.environ.get("HF_TOKEN")
+    base_url=API_BASE_URL,
+    api_key=HF_TOKEN
 )
 
 env = CyberSecurityEnv()
 state = env.reset()
 done = False
 
+print("START")
+
+step_num = 0
 while not done:
     response = client.chat.completions.create(
-        model=os.environ.get("MODEL_NAME", "meta-llama/Llama-3.1-8B-Instruct"),
+        model=MODEL_NAME,
         messages=[
             {
                 "role": "system",
-                "content": """You are a cybersecurity defense agent. 
-Choose the best action from: block_ip, scan_file, quarantine_file, enable_firewall, monitor.
-Reply with ONLY the action name, nothing else."""
+                "content": "You are a cybersecurity defense agent. Choose one action from: block_ip, scan_file, quarantine_file, enable_firewall, monitor. Reply with ONLY the action name, nothing else."
             },
             {
                 "role": "user",
@@ -45,6 +50,8 @@ What action should you take?"""
         action = "monitor"
 
     state, reward, done, _ = env.step(action)
-    print(f"Action: {action}, Reward: {reward.reward}, Health: {state.system_health}")
+    
+    print(f"STEP {step_num}: action={action}, reward={reward.reward}, health={state.system_health}")
+    step_num += 1
 
-print("Finished")
+print("END")
