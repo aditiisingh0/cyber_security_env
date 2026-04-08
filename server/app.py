@@ -1,7 +1,19 @@
+import sys
+sys.path.insert(0, '/app')
+
 from fastapi import FastAPI
-from env import CyberSecurityEnv
 from models import Action
 import uvicorn
+
+# Import with fallback
+try:
+    from env import CyberSecurityEnv
+except ImportError:
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("env", "/app/env.py")
+    env_module = importlib.util.load_from_spec(spec)
+    spec.loader.exec_module(env_module)
+    CyberSecurityEnv = env_module.CyberSecurityEnv
 
 app = FastAPI()
 env = CyberSecurityEnv()
