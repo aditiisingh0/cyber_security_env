@@ -50,7 +50,7 @@ def run_task(task_name):
         print(f"[STEP] task={task_name} step={step_num} action={action} reward={round(reward.reward, 2)}", flush=True)
         step_num += 1
 
-    score = round(state.system_health / 100, 2)
+    score = max(0.01, min(0.99, round(state.system_health / 100, 2)))
     print(f"[END] task={task_name} score={score} steps={step_num}", flush=True)
 
 
