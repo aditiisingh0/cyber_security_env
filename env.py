@@ -1,6 +1,37 @@
 import random
 from models import Observation, Reward
 
+# ✅ --- GRADER FUNCTIONS ADD KIYE ---
+def grade_easy(env):
+    return not env.malware_detected  # malware remove hona chahiye
+
+def grade_medium(env):
+    return not env.ddos_attack  # ddos band hona chahiye
+
+def grade_hard(env):
+    return env.system_health > 0 and env.time_step >= 50  # survive 50 steps
+
+
+# ✅ --- TASKS WITH GRADERS ---
+tasks = [
+    {
+        "name": "easy",
+        "description": "Detect and remove malware",
+        "grader": grade_easy
+    },
+    {
+        "name": "medium",
+        "description": "Stop DDoS attack",
+        "grader": grade_medium
+    },
+    {
+        "name": "hard",
+        "description": "Protect system for 50 steps",
+        "grader": grade_hard
+    }
+]
+
+
 class CyberSecurityEnv:
     def __init__(self):
         self.reset()
@@ -65,4 +96,5 @@ class CyberSecurityEnv:
 
         self.time_step += 1
         done = self.system_health <= 0 or self.time_step >= 50
+
         return self.state(), Reward(reward=reward), done, {}
