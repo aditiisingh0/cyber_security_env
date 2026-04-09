@@ -1,4 +1,5 @@
 import os
+import sys
 from openai import OpenAI
 from env import CyberSecurityEnv
 
@@ -6,16 +7,13 @@ API_BASE_URL = os.getenv("API_BASE_URL", "https://api-inference.huggingface.co/v
 MODEL_NAME = os.getenv("MODEL_NAME", "meta-llama/Llama-3.1-8B-Instruct")
 HF_TOKEN = os.getenv("HF_TOKEN")
 
-client = OpenAI(
-    base_url=API_BASE_URL,
-    api_key=HF_TOKEN
-)
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
 env = CyberSecurityEnv()
 state = env.reset()
 done = False
 
-print("START")
+print("[START] task=hard", flush=True)
 
 step_num = 0
 while not done:
@@ -40,11 +38,12 @@ while not done:
         if action not in valid:
             action = "monitor"
     except Exception as e:
-        print(f"API error: {e}")
+        print(f"API error: {e}", flush=True)
         action = "monitor"
 
     state, reward, done, _ = env.step(action)
-    print(f"STEP {step_num}: action={action}, reward={reward.reward}, health={state.system_health}")
+    print(f"[STEP] step={step_num} action={action} reward={round(reward.reward, 2)}", flush=True)
     step_num += 1
 
-print("END")
+score = round(state.system_health / 100, 2)
+print(f"[END] task=hard score={score} steps={step_num}", flush=True)
